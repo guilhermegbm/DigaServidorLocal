@@ -6,6 +6,7 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.utils.ConnectionFactory;
+import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +20,7 @@ public class UsuarioDAO {
 
     public static boolean autenticaUsuario(String nomeUsuario, String senha) {
         try {
-            Connection conn = ConnectionFactory.getConnection();
+            Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ? and usuSenha = ?");
             
             stmt.setString(1, nomeUsuario);
