@@ -18,6 +18,7 @@ public class Ocorrencia {
     private String descricao;
     private double latitude;
     private double longitude;
+    private String endereco;
     private byte[] fotoOcorrencia;
     private Date dataPostagem;
     private byte[] fotoResolvida;
@@ -68,6 +69,14 @@ public class Ocorrencia {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public byte[] getFotoOcorrencia() {

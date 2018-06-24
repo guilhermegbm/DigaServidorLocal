@@ -20,6 +20,30 @@ import java.util.List;
  */
 public class TagDAO {
 
+    public static List<Tag> listarTodas () {
+        List<Tag> t = new ArrayList<>();
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
+                    + "from tag");
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Tag tag = new Tag();
+
+                tag.setCodigo(rs.getInt(1));
+                tag.setNome(rs.getString(2));
+                tag.setImportancia(rs.getInt(3));
+                t.add(tag);
+            }
+            stmt.close();
+        } catch (SQLException ex) {
+            System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        }
+        return t;
+    }
+    
     public static List<Tag> listarTagsPorOcorrencia(int codOcorrencia) {
         List<Tag> t = new ArrayList<>();
         try {

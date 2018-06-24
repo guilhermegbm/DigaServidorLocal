@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import com.diga.servidor.modelo.beans.Ocorrencia;
+import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
+import com.diga.servidor.modelo.beans.UsuarioReportaOcorrencia;
 import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Blob;
@@ -27,18 +29,19 @@ public class OcorrenciaDAO {
         Blob x = null;
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, o.getTitulo());
             stmt.setString(2, o.getDescricao());
             stmt.setDouble(3, o.getLatitude());
             stmt.setDouble(4, o.getLongitude());
-            stmt.setBlob(5, x);
-            stmt.setTimestamp(6, new Timestamp(o.getDataPostagem().getTime()));
-            stmt.setInt(7, o.getNumCurtidas());
-            stmt.setInt(8, o.getNumReports());
-            stmt.setInt(9, o.getCategoria());
-            stmt.setInt(10, o.getSituacao());
-            stmt.setInt(11, o.getUsuario());
+            stmt.setString(5, o.getEndereco());
+            stmt.setBlob(6, x);
+            stmt.setTimestamp(7, new Timestamp(o.getDataPostagem().getTime()));
+            stmt.setInt(8, o.getNumCurtidas());
+            stmt.setInt(9, o.getNumReports());
+            stmt.setInt(10, o.getCategoria());
+            stmt.setInt(11, o.getSituacao());
+            stmt.setInt(12, o.getUsuario());
 
             stmt.executeUpdate();
 
@@ -55,7 +58,7 @@ public class OcorrenciaDAO {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt;
-            if ((query == null) || (query.equals(""))){
+            if ((query == null) || (query.equals(""))) {
                 stmt = conn.prepareStatement("select * from ocorrencia");
             } else {
                 stmt = conn.prepareStatement(query);
@@ -69,15 +72,16 @@ public class OcorrenciaDAO {
                 o.setDescricao(rs.getString(3));
                 o.setLatitude(rs.getDouble(4));
                 o.setLongitude(rs.getDouble(5));
-                o.setFotoOcorrencia(rs.getBytes(6));
-                o.setDataPostagem(rs.getDate(7));
-                o.setDataResolvida(rs.getDate(8));
-                o.setFotoResolvida(rs.getBytes(9));
-                o.setNumCurtidas(rs.getInt(10));
-                o.setNumReports(rs.getInt(11));
-                o.setCategoria(rs.getInt(12));
-                o.setSituacao(rs.getInt(13));
-                o.setUsuario(rs.getInt(14));
+                o.setEndereco(rs.getString(6));
+                o.setFotoOcorrencia(rs.getBytes(7));
+                o.setDataPostagem(rs.getDate(8));
+                o.setDataResolvida(rs.getDate(9));
+                o.setFotoResolvida(rs.getBytes(10));
+                o.setNumCurtidas(rs.getInt(11));
+                o.setNumReports(rs.getInt(12));
+                o.setCategoria(rs.getInt(13));
+                o.setSituacao(rs.getInt(14));
+                o.setUsuario(rs.getInt(15));
                 o.setTags(TagDAO.listarTagsPorOcorrencia(rs.getInt(1)));
 
                 l.add(o);
@@ -87,5 +91,73 @@ public class OcorrenciaDAO {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
         }
         return l;
+    }
+
+    public static String curteOcorrencia(UsuarioCurteOcorrencia uso) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("insert into usuario_curte_ocorrencia (uso_usuCodigo, uso_ocoCodigo, usoLatitude, usoLongitude) values (?,?,?,?)");
+            stmt.setInt(1, uso.getUsuario());
+            stmt.setInt(2, uso.getOcorrencia());
+            stmt.setDouble(3, uso.getLatitude());
+            stmt.setDouble(4, uso.getLongitude());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        }
+        return "1";
+    }
+
+    public static String descurteOcorrencia(int usuario, int ocorrencia) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("delete from usuario_curte_ocorrencia where uso_usuCodigo = ? and uso_ocoCodigo = ?");
+            stmt.setInt(1, usuario);
+            stmt.setInt(2, ocorrencia);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        }
+        return "1";
+    }
+
+    public static String reportaOcorrencia(UsuarioReportaOcorrencia uro) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("insert into usuario_reporta_ocorrencia (uro_usuCodigo, uro_ocoCodigo, uroLatitude, uroLongitude) values (?,?,?,?)");
+            stmt.setInt(1, uro.getUsuario());
+            stmt.setInt(2, uro.getOcorrencia());
+            stmt.setDouble(3, uro.getLatitude());
+            stmt.setDouble(4, uro.getLongitude());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        }
+        return "1";
+    }
+
+    public static String desreportaOcorrencia(int usuario, int ocorrencia) {
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("delete from usuario_reporta_ocorrencia where uro_usuCodigo = ? and uro_ocoCodigo = ?");
+            stmt.setInt(1, usuario);
+            stmt.setInt(2, ocorrencia);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        }
+        return "1";
     }
 }

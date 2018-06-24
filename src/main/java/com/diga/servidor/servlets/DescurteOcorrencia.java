@@ -7,14 +7,9 @@ package com.diga.servidor.servlets;
 
 import com.diga.servidor.controle.ControleOcorrencia;
 import com.diga.servidor.controle.ControleUsuario;
-import com.diga.servidor.modelo.beans.Ocorrencia;
-import com.diga.servidor.modelo.persistencia.OcorrenciaDAO;
-import com.diga.servidor.modelo.persistencia.UsuarioDAO;
+import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -26,35 +21,35 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "InsereOcorrencia", urlPatterns = {"/diga_api/InsereOcorrencia"},
-        initParams = {
-            @WebInitParam(name = "ocorrencia", value = "")
-            , @WebInitParam(name = "nomeUsuario", value = "")
-            , @WebInitParam(name = "senha", value = "")})
-public class InsereOcorrencia extends HttpServlet {
-
+@WebServlet(name = "DescurteOcorrencia", urlPatterns = {"/DescurteOcorrencia"}, initParams = {
+    @WebInitParam(name = "nomeUsuario", value = "")
+    , @WebInitParam(name = "senha", value = "")
+    , @WebInitParam(name = "usuario", value = "")
+    , @WebInitParam(name = "ocorrencia", value = "")})
+public class DescurteOcorrencia extends HttpServlet {
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
-
-            Ocorrencia o = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create().fromJson(request.getParameter("ocorrencia"), Ocorrencia.class);
-
-            response.setHeader("sucesso", ControleOcorrencia.persistirOcorrencia(o));
+            
+            int usuario = Integer.parseInt(request.getParameter("usuario"));
+            int ocorrencia = Integer.parseInt(request.getParameter("ocorrencia"));
+            
+            response.setHeader("sucesso", ControleOcorrencia.descurteOcorrencia(usuario, ocorrencia));
         } else {
             response.setHeader("auth", "0");
         }
     }
-
+    
     @Override
     public String getServletInfo() {
         return "Short description";
     }
-
 }

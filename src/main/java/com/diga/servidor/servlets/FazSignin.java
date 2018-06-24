@@ -5,16 +5,12 @@
  */
 package com.diga.servidor.servlets;
 
-import com.diga.servidor.controle.ControleOcorrencia;
 import com.diga.servidor.controle.ControleUsuario;
-import com.diga.servidor.modelo.beans.Ocorrencia;
-import com.diga.servidor.modelo.persistencia.OcorrenciaDAO;
+import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.modelo.persistencia.UsuarioDAO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
@@ -26,12 +22,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "InsereOcorrencia", urlPatterns = {"/diga_api/InsereOcorrencia"},
-        initParams = {
-            @WebInitParam(name = "ocorrencia", value = "")
-            , @WebInitParam(name = "nomeUsuario", value = "")
-            , @WebInitParam(name = "senha", value = "")})
-public class InsereOcorrencia extends HttpServlet {
+@WebServlet(name = "FazSignin", urlPatterns = {"/diga_api/FazSignin"}, initParams = {
+    @WebInitParam(name = "usuario", value = "")})
+public class FazSignin extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -41,14 +34,19 @@ public class InsereOcorrencia extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
-            response.setHeader("auth", "1");
 
-            Ocorrencia o = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create().fromJson(request.getParameter("ocorrencia"), Ocorrencia.class);
+        Usuario u = new Gson().fromJson(request.getParameter("usuario"), Usuario.class);
 
-            response.setHeader("sucesso", ControleOcorrencia.persistirOcorrencia(o));
+        if (u != null) {
+            if (!UsuarioDAO.nomeUsuarioExiste(u.getNomeUsuario())) {
+                response.setHeader("nUsuExiste", "0");
+
+                response.setHeader("sucesso", ControleUsuario.insereUsuario(u));
+            } else {
+                response.setHeader("nUsuExiste", "1");
+            }
         } else {
-            response.setHeader("auth", "0");
+            response.setHeader("sucesso", "0");
         }
     }
 
@@ -56,5 +54,4 @@ public class InsereOcorrencia extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }
-
 }
