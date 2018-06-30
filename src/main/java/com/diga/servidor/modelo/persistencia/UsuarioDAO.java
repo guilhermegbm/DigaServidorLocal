@@ -12,6 +12,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -73,5 +75,36 @@ public class UsuarioDAO {
             return "0";
         }
         return "1";
+    }
+
+    public static List<Usuario> listarUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>();
+
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("select * from usuario");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                
+                u.setCodigo(rs.getInt(1));
+                u.setNome(rs.getString(2));
+                u.setNomeUsuario(rs.getString(3));
+                u.setSenha(rs.getString(4));
+                u.setLatitudeResidencia(rs.getDouble(5));
+                u.setLongitudeResidencia(rs.getDouble(6));
+                u.setEnderecoCompleto(rs.getString(7));
+                u.setIsInBlacklist(rs.getBoolean(8));
+                u.setNumStrikes(rs.getInt(9));
+                u.setTipoUsuario(rs.getInt(10));
+                
+                usuarios.add(u);
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        }
+        return usuarios;
     }
 }

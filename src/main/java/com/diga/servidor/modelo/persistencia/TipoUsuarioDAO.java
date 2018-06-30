@@ -5,8 +5,7 @@
  */
 package com.diga.servidor.modelo.persistencia;
 
-import com.diga.servidor.modelo.beans.Categoria;
-import com.diga.servidor.modelo.beans.Tag;
+import com.diga.servidor.modelo.beans.TipoUsuario;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,28 +18,27 @@ import java.util.List;
  *
  * @author Guilherme
  */
-public class CategoriaDAO {
+public class TipoUsuarioDAO {
 
-    public static List<Categoria> listarCategorias() {
-        List<Categoria> cat = new ArrayList<>();
+    public static List<TipoUsuario> listarTipos() {
+        List<TipoUsuario> t = new ArrayList<>();
+
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from categoria");
-
+            PreparedStatement stmt = conn.prepareStatement("select * from tipousuario");
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Categoria c = new Categoria();
-
-                c.setCodigo(rs.getInt(1));
-                c.setNome(rs.getString(2));
-                c.setCor(rs.getInt(3));
-                cat.add(c);
+                TipoUsuario tu = new TipoUsuario();
+                tu.setCodigo(rs.getInt(1));
+                tu.setNome(rs.getString(2));
+                
+                t.add(tu);
             }
             stmt.close();
-        } catch (SQLException ex) {
-            System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
         }
-        return cat;
+        return t;
     }
 }

@@ -5,16 +5,16 @@
  */
 package com.diga.servidor.controle;
 
-import com.diga.servidor.modelo.beans.Tag;
-import com.diga.servidor.modelo.persistencia.TagDAO;
+import com.diga.servidor.modelo.beans.TipoUsuario;
+import com.diga.servidor.modelo.persistencia.TipoUsuarioDAO;
 import java.util.List;
 
 /**
  *
  * @author Guilherme
  */
-public class ControleTag {
-    public static List<Tag> listarTags () {
-        return TagDAO.listarTags();
+public class ControleTipoUsuario {
+    public static List<TipoUsuario> listarTipos () {
+        return TipoUsuarioDAO.listarTipos();
     }
 }

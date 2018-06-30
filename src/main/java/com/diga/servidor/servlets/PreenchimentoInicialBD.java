@@ -37,9 +37,9 @@ public class PreenchimentoInicialBD extends HttpServlet {
 
         List<Object> valores = new ArrayList<>();
 
-        valores.add(ControleTag.listarTodas());
-        valores.add(ControleSituacao.listarTodas());
-        valores.add(ControleCategoria.listarTodas());
+        valores.add(ControleTag.listarTags());
+        valores.add(ControleSituacao.listarSituacoes());
+        valores.add(ControleCategoria.listarCategorias());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

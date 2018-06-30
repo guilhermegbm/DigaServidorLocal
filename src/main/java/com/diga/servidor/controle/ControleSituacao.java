@@ -14,7 +14,7 @@ import java.util.List;
  * @author Guilherme
  */
 public class ControleSituacao {
-    public static List<Situacao> listarTodas () {
+    public static List<Situacao> listarSituacoes () {
         return SituacaoDAO.listarTodas();
     }
 }

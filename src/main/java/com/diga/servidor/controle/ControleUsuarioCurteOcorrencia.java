@@ -5,17 +5,17 @@
  */
 package com.diga.servidor.controle;
 
-import com.diga.servidor.modelo.beans.Categoria;
-import com.diga.servidor.modelo.persistencia.CategoriaDAO;
+import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
+import com.diga.servidor.modelo.persistencia.UsuarioCurteOcorrenciaDAO;
 import java.util.List;
 
 /**
  *
  * @author Guilherme
  */
-public class ControleCategoria {
+public class ControleUsuarioCurteOcorrencia {
 
-    public static List<Categoria> listarCategorias() {
-        return CategoriaDAO.listarCategorias();
+    public static List<UsuarioCurteOcorrencia> listarUcos() {
+        return UsuarioCurteOcorrenciaDAO.listarUcos();
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class TagDAO {
 
-    public static List<Tag> listarTodas () {
+    public static List<Tag> listarTags () {
         List<Tag> t = new ArrayList<>();
         try {
             Connection conn = DBConnection.getConnection();

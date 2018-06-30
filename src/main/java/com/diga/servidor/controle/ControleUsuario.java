@@ -7,12 +7,18 @@ package com.diga.servidor.controle;
 
 import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.modelo.persistencia.UsuarioDAO;
+import java.util.List;
 
 /**
  *
  * @author Guilherme
  */
 public class ControleUsuario {
+    
+    public static List<Usuario> listarUsuarios () {
+        return UsuarioDAO.listarUsuarios();
+    }
+    
     public static boolean autenticaUsuario (String nomeUsuario, String senha) {
         return UsuarioDAO.autenticaUsuario(nomeUsuario, senha);
     }
