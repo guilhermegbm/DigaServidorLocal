@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "DesreportaOcorrencia", urlPatterns = {"/DesreportaOcorrencia"}, initParams = {
+@WebServlet(name = "DesreportaOcorrencia", urlPatterns = {"/diga_api/DesreportaOcorrencia"}, initParams = {
     @WebInitParam(name = "nomeUsuario", value = "")
     , @WebInitParam(name = "senha", value = "")
     , @WebInitParam(name = "usuario", value = "")

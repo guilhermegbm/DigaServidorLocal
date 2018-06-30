@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "PreenchimentoInicialBD", urlPatterns = {"/PreenchimentoInicialBD"})
+@WebServlet(name = "PreenchimentoInicialBD", urlPatterns = {"/diga_api/PreenchimentoInicialBD"})
 public class PreenchimentoInicialBD extends HttpServlet {
 
     @Override
