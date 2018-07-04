@@ -6,7 +6,9 @@
 package com.diga.servidor.servlets;
 
 import com.diga.servidor.controle.ControleUsuario;
+import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.modelo.persistencia.UsuarioDAO;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -35,6 +37,11 @@ public class FazLogin extends HttpServlet {
             throws ServletException, IOException {
         if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
+            
+            Usuario u = ControleUsuario.listarUsuarioPorNomeUsuarioESenha(request.getParameter("nomeUsuario"), request.getParameter("senha"));
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().println(new Gson().toJson(u));
         } else {
             response.setHeader("auth", "0");
         }

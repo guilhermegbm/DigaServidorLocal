@@ -30,4 +30,8 @@ public class ControleUsuario {
     public static String insereUsuario (Usuario u){
         return UsuarioDAO.insereUsuario(u);
     }
+
+    public static Usuario listarUsuarioPorNomeUsuarioESenha(String nomeUsuario, String senha) {
+        return UsuarioDAO.listarUsuarioPorNomeUsuarioESenha( nomeUsuario, senha);
+    }
 }

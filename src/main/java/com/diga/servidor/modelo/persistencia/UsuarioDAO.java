@@ -20,7 +20,7 @@ import java.util.List;
  * @author Guilherme
  */
 public class UsuarioDAO {
-
+    
     public static boolean autenticaUsuario(String nomeUsuario, String senha) {
         try {
             Connection conn = DBConnection.getConnection();
@@ -28,32 +28,32 @@ public class UsuarioDAO {
             
             stmt.setString(1, nomeUsuario);
             stmt.setString(2, senha);
-
+            
             ResultSet rs = stmt.executeQuery();
-
+            
             return rs.first();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return false;
         }
     }
-
+    
     public static boolean nomeUsuarioExiste(String nomeUsuario) {
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ?");
             
             stmt.setString(1, nomeUsuario);
-
+            
             ResultSet rs = stmt.executeQuery();
-
+            
             return rs.first();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return false;
         }
     }
-
+    
     public static String insereUsuario(Usuario u) {
         try {
             Connection conn = DBConnection.getConnection();
@@ -67,24 +67,24 @@ public class UsuarioDAO {
             stmt.setBoolean(7, u.isIsInBlacklist());
             stmt.setInt(8, u.getNumStrikes());
             stmt.setInt(9, u.getTipoUsuario());
-
+            
             stmt.executeUpdate();
-
+            
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return "0";
         }
         return "1";
     }
-
+    
     public static List<Usuario> listarUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
-
+        
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("select * from usuario");
             ResultSet rs = stmt.executeQuery();
-
+            
             while (rs.next()) {
                 Usuario u = new Usuario();
                 
@@ -106,5 +106,36 @@ public class UsuarioDAO {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
         }
         return usuarios;
+    }
+    
+    public static Usuario listarUsuarioPorNomeUsuarioESenha(String nomeUsuario, String senha) {
+        Usuario u = new Usuario();
+        
+        try {
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement("select * from usuario where usuNomeUsuario = ? and usuSenha = ?");
+            stmt.setString(1, nomeUsuario);
+            stmt.setString(2, senha);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                u.setCodigo(rs.getInt(1));
+                u.setNome(rs.getString(2));
+                u.setNomeUsuario(rs.getString(3));
+                u.setSenha(rs.getString(4));
+                u.setLatitudeResidencia(rs.getDouble(5));
+                u.setLongitudeResidencia(rs.getDouble(6));
+                u.setEnderecoCompleto(rs.getString(7));
+                u.setIsInBlacklist(rs.getBoolean(8));
+                u.setNumStrikes(rs.getInt(9));
+                u.setTipoUsuario(rs.getInt(10));
+                
+            }
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        }
+        return u;
     }
 }
