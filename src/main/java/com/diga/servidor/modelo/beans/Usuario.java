@@ -19,7 +19,7 @@ public class Usuario {
     private String enderecoCompleto;
     private boolean isInBlacklist;
     private int numStrikes;
-    private byte[] foto;
+    private String foto;
     
     private int tipoUsuario;
 
@@ -103,11 +103,11 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public byte[] getFoto() {
+    public String getFoto() {
         return foto;
     }
 
-    public void setFoto(byte[] foto) {
+    public void setFoto(String foto) {
         this.foto = foto;
     }
     

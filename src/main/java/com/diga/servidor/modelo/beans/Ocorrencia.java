@@ -19,9 +19,9 @@ public class Ocorrencia {
     private double latitude;
     private double longitude;
     private String endereco;
-    private byte[] fotoOcorrencia;
+    private String fotoOcorrencia;
     private Date dataPostagem;
-    private byte[] fotoResolvida;
+    private String fotoResolvida;
     private Date dataResolvida;
     private int numCurtidas;
     private int numReports;
@@ -79,11 +79,11 @@ public class Ocorrencia {
         this.endereco = endereco;
     }
 
-    public byte[] getFotoOcorrencia() {
+    public String getFotoOcorrencia() {
         return fotoOcorrencia;
     }
 
-    public void setFotoOcorrencia(byte[] fotoOcorrencia) {
+    public void setFotoOcorrencia(String fotoOcorrencia) {
         this.fotoOcorrencia = fotoOcorrencia;
     }
 
@@ -95,11 +95,11 @@ public class Ocorrencia {
         this.dataPostagem = dataPostagem;
     }
 
-    public byte[] getFotoResolvida() {
+    public String getFotoResolvida() {
         return fotoResolvida;
     }
 
-    public void setFotoResolvida(byte[] fotoResolvida) {
+    public void setFotoResolvida(String fotoResolvida) {
         this.fotoResolvida = fotoResolvida;
     }
 

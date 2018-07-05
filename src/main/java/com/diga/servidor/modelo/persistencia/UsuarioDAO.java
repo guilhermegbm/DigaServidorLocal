@@ -56,7 +56,6 @@ public class UsuarioDAO {
     }
     
     public static String insereUsuario(Usuario u) {
-        Blob b = null;
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
@@ -68,7 +67,7 @@ public class UsuarioDAO {
             stmt.setString(6, u.getEnderecoCompleto());
             stmt.setBoolean(7, u.isIsInBlacklist());
             stmt.setInt(8, u.getNumStrikes());
-            stmt.setBlob(9, b);
+            stmt.setString(9, u.getFoto());
             stmt.setInt(10, u.getTipoUsuario());
             
             stmt.executeUpdate();
@@ -100,7 +99,7 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setFoto(rs.getBytes(10));
+                u.setFoto(rs.getString(10));
                 u.setTipoUsuario(rs.getInt(11));
                 
                 usuarios.add(u);
@@ -133,7 +132,7 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setFoto(rs.getBytes(10));
+                u.setFoto(rs.getString(10));
                 u.setTipoUsuario(rs.getInt(11));
                 
             }

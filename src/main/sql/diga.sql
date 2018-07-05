@@ -56,10 +56,10 @@ CREATE TABLE `ocorrencia` (
   `ocoLatitude` double NOT NULL,
   `ocoLongitude` double NOT NULL,
   `ocoEndereco` varchar(200) DEFAULT NULL,
-  `ocoFotoOcorrencia` blob,
+  `ocoFotoOcorrencia` text,
   `ocoDataPostagem` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ocoDataResolvida` date DEFAULT NULL,
-  `ocoFotoResolvida` blob,
+  `ocoFotoResolvida` text,
   `ocoNumCurtidas` int(11) NOT NULL,
   `ocoNumReports` int(11) NOT NULL,
   `oco_catCodigo` int(11) NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE `ocorrencia` (
 
 LOCK TABLES `ocorrencia` WRITE;
 /*!40000 ALTER TABLE `ocorrencia` DISABLE KEYS */;
-INSERT INTO `ocorrencia` VALUES (1,'Buraco na rua ','Tem um buraco na rua bem em frente à minha casa.',12.5874,48.9965,'Rua 1, Av. 1, Nº 1',NULL,'2018-06-23 20:10:56','2018-01-29',NULL,5,0,4,3,1),(2,'Alagamento na minha rua','A chuva do dia anterior deixou um alagamento na minha rua.',84.4477,65.2584,'Rua 2, Av. 2, Nº 2',NULL,'2018-06-23 20:10:56',NULL,NULL,3,1,1,2,1),(3,'Lixo jogado incorretamente','Na minha rua tem um monte de lixo jogado de forma incorreta.',11.4455,22.1548,'Rua 3, Av. 3, Nº 3',NULL,'2018-06-23 20:10:56',NULL,NULL,1,0,1,1,1),(4,'Bueiro entupido ','Bem em frente Ã  minha casa tem um bueiro entupido que estÃ¡ fedendo muito',44.3322,33.2211,'Rua 4, Av. 4, Nº 4',NULL,'2018-06-23 20:10:56',NULL,NULL,0,0,1,1,1);
+INSERT INTO `ocorrencia` VALUES (1,'Buraco na rua ','Tem um buraco na rua bem em frente à minha casa.',12.5874,48.9965,'Rua 1, Av. 1, Nº 1','abc123blablabla','2018-06-23 20:10:56','2018-01-29','abc123blablabla',5,0,4,3,1),(2,'Alagamento na minha rua','A chuva do dia anterior deixou um alagamento na minha rua.',84.4477,65.2584,'Rua 2, Av. 2, Nº 2','abc123blablabla','2018-06-23 20:10:56',NULL,NULL,3,1,1,2,1),(3,'Lixo jogado incorretamente','Na minha rua tem um monte de lixo jogado de forma incorreta.',11.4455,22.1548,'Rua 3, Av. 3, Nº 3','abc123blablabla','2018-06-23 20:10:56',NULL,NULL,1,0,1,1,1),(4,'Bueiro entupido ','Bem em frente Ã  minha casa tem um bueiro entupido que estÃ¡ fedendo muito',44.3322,33.2211,'Rua 4, Av. 4, Nº 4','abc123blablabla','2018-06-23 20:10:56',NULL,NULL,0,0,1,1,1);
 /*!40000 ALTER TABLE `ocorrencia` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -203,7 +203,7 @@ CREATE TABLE `usuario` (
   `usuEnderecoCompleto` varchar(200) NOT NULL,
   `usuIsInBlacklist` tinyint(1) NOT NULL,
   `usuNumStrikes` int(11) NOT NULL,
-  `usuFoto` blob,
+  `usuFoto` text,
   `usu_tusCodigo` int(11) NOT NULL,
   PRIMARY KEY (`usuCodigo`),
   KEY `fk_Usuario_tipoUsuario1_idx` (`usu_tusCodigo`),
@@ -217,7 +217,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Adm Adm','adm','mda',12.3456,65.4321,'Rua do Adm',0,0,'',1);
+INSERT INTO `usuario` VALUES (1,'Adm Adm','adm','mda',12.3456,65.4321,'Rua do Adm',0,0,'abc123blablabla',1);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -298,4 +298,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-04 22:33:35
+-- Dump completed on 2018-07-05 20:13:57

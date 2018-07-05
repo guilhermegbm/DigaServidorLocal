@@ -26,7 +26,6 @@ import java.sql.Timestamp;
 public class OcorrenciaDAO {
 
     public static String persistirOcorrencia(Ocorrencia o) {
-        Blob x = null;
         try {
             Connection conn = DBConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -35,7 +34,7 @@ public class OcorrenciaDAO {
             stmt.setDouble(3, o.getLatitude());
             stmt.setDouble(4, o.getLongitude());
             stmt.setString(5, o.getEndereco());
-            stmt.setBlob(6, x);
+            stmt.setString(6, o.getFotoOcorrencia());
             stmt.setTimestamp(7, new Timestamp(o.getDataPostagem().getTime()));
             stmt.setInt(8, o.getNumCurtidas());
             stmt.setInt(9, o.getNumReports());
@@ -73,10 +72,10 @@ public class OcorrenciaDAO {
                 o.setLatitude(rs.getDouble(4));
                 o.setLongitude(rs.getDouble(5));
                 o.setEndereco(rs.getString(6));
-                o.setFotoOcorrencia(rs.getBytes(7));
+                o.setFotoOcorrencia(rs.getString(7));
                 o.setDataPostagem(rs.getDate(8));
                 o.setDataResolvida(rs.getDate(9));
-                o.setFotoResolvida(rs.getBytes(10));
+                o.setFotoResolvida(rs.getString(10));
                 o.setNumCurtidas(rs.getInt(11));
                 o.setNumReports(rs.getInt(12));
                 o.setCategoria(rs.getInt(13));
