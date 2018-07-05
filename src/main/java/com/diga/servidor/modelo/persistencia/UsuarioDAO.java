@@ -8,6 +8,7 @@ package com.diga.servidor.modelo.persistencia;
 import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,9 +56,10 @@ public class UsuarioDAO {
     }
     
     public static String insereUsuario(Usuario u) {
+        Blob b = null;
         try {
             Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, u.getNome());
             stmt.setString(2, u.getNomeUsuario());
             stmt.setString(3, u.getSenha());
@@ -66,7 +68,8 @@ public class UsuarioDAO {
             stmt.setString(6, u.getEnderecoCompleto());
             stmt.setBoolean(7, u.isIsInBlacklist());
             stmt.setInt(8, u.getNumStrikes());
-            stmt.setInt(9, u.getTipoUsuario());
+            stmt.setBlob(9, b);
+            stmt.setInt(10, u.getTipoUsuario());
             
             stmt.executeUpdate();
             
@@ -97,7 +100,8 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setTipoUsuario(rs.getInt(10));
+                u.setFoto(rs.getBytes(10));
+                u.setTipoUsuario(rs.getInt(11));
                 
                 usuarios.add(u);
             }
@@ -129,7 +133,8 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setTipoUsuario(rs.getInt(10));
+                u.setFoto(rs.getBytes(10));
+                u.setTipoUsuario(rs.getInt(11));
                 
             }
             stmt.close();

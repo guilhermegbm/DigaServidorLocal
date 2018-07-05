@@ -72,7 +72,7 @@ CREATE TABLE `ocorrencia` (
   CONSTRAINT `fk_Ocorrencia_Categoria1` FOREIGN KEY (`oco_catCodigo`) REFERENCES `categoria` (`catCodigo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Ocorrencia_Situacao1` FOREIGN KEY (`oco_sitCodigo`) REFERENCES `situacao` (`sitCodigo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Ocorrencia_Usuario1` FOREIGN KEY (`oco_usuCodigo`) REFERENCES `usuario` (`usuCodigo`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,6 +203,7 @@ CREATE TABLE `usuario` (
   `usuEnderecoCompleto` varchar(200) NOT NULL,
   `usuIsInBlacklist` tinyint(1) NOT NULL,
   `usuNumStrikes` int(11) NOT NULL,
+  `usuFoto` blob,
   `usu_tusCodigo` int(11) NOT NULL,
   PRIMARY KEY (`usuCodigo`),
   KEY `fk_Usuario_tipoUsuario1_idx` (`usu_tusCodigo`),
@@ -216,7 +217,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'Adm Adm','adm','mda',12.3456,65.4321,'Rua do Adm',0,0,1);
+INSERT INTO `usuario` VALUES (1,'Adm Adm','adm','mda',12.3456,65.4321,'Rua do Adm',0,0,'',1);
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,4 +298,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-06-23 21:07:23
+-- Dump completed on 2018-07-04 22:33:35

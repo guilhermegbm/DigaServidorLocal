@@ -40,7 +40,7 @@ public class MostraTUDO extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        if (UsuarioDAO.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
+        //if (UsuarioDAO.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
 
             List<Object> valores = new ArrayList<>();
@@ -66,9 +66,9 @@ public class MostraTUDO extends HttpServlet {
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().println(new Gson().toJson(valores));
-        } else {
-            response.setHeader("auth", "0");
-        }
+        //} else {
+        //    response.setHeader("auth", "0");
+        //}
     }
 
     @Override

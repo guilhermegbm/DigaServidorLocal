@@ -19,6 +19,7 @@ public class Usuario {
     private String enderecoCompleto;
     private boolean isInBlacklist;
     private int numStrikes;
+    private byte[] foto;
     
     private int tipoUsuario;
 
@@ -101,4 +102,14 @@ public class Usuario {
     public void setTipoUsuario(int tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
+    }
+    
+    
 }
