@@ -44,6 +44,10 @@ public class FazLogin extends HttpServlet {
             response.getWriter().println(new Gson().toJson(u));
         } else {
             response.setHeader("auth", "0");
+            Usuario u = null;
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().println(new Gson().toJson(u));
         }
     }
 
