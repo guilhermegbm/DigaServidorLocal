@@ -54,4 +54,8 @@ public class ControleOcorrencia {
     public static String desreportaOcorrencia(int usuario, int ocorrencia) {
         return OcorrenciaDAO.descurteOcorrencia(usuario, ocorrencia);
     }
+
+    public static String deletarOcorrencia(int codigoOcorrencia) {
+        return OcorrenciaDAO.deletarOcorrencia(codigoOcorrencia);
+    }
 }

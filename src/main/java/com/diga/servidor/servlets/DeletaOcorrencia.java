@@ -10,9 +10,10 @@ import com.diga.servidor.controle.ControleUsuario;
 import com.diga.servidor.modelo.beans.Ocorrencia;
 import com.google.gson.GsonBuilder;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,16 +22,16 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "InsereOcorrencia", urlPatterns = {"/diga_api/InsereOcorrencia"},
-        initParams = {
-            @WebInitParam(name = "ocorrencia", value = "")
-            , @WebInitParam(name = "nomeUsuario", value = "")
-            , @WebInitParam(name = "senha", value = "")})
-public class InsereOcorrencia extends HttpServlet {
+@WebServlet(name = "DeletaOcorrencia", urlPatterns = {"/diga_api/DeletaOcorrencia"}, initParams = {
+    @WebInitParam(name = "nomeUsuario", value = "")
+    , @WebInitParam(name = "senha", value = "")
+    , @WebInitParam(name = "codigoOcorrencia", value = "")})
+public class DeletaOcorrencia extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
     }
 
     @Override
@@ -39,9 +40,15 @@ public class InsereOcorrencia extends HttpServlet {
         if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
 
-            Ocorrencia o = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create().fromJson(request.getParameter("ocorrencia"), Ocorrencia.class);
+            try {
+                int codigoOcorrencia = Integer.parseInt(request.getParameter("codigoOcorrencia"));
+                
+                response.setHeader("sucesso", ControleOcorrencia.deletarOcorrencia(codigoOcorrencia));
+            } catch (Exception e) {
+                response.setHeader("sucesso", "0");
+            }
 
-            response.setHeader("sucesso", ControleOcorrencia.persistirOcorrencia(o));
+            
         } else {
             response.setHeader("auth", "0");
         }
@@ -50,6 +57,6 @@ public class InsereOcorrencia extends HttpServlet {
     @Override
     public String getServletInfo() {
         return "Short description";
-    }
+    }// </editor-fold>
 
 }

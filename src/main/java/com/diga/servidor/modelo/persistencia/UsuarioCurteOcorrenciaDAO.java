@@ -19,13 +19,18 @@ import java.util.List;
  * @author Guilherme
  */
 public class UsuarioCurteOcorrenciaDAO {
-    public static List<UsuarioCurteOcorrencia> listarUcos () {
+
+    public static List<UsuarioCurteOcorrencia> listarUcos() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<UsuarioCurteOcorrencia> ucos = new ArrayList<>();
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from usuario_curte_ocorrencia");
-            ResultSet rs = stmt.executeQuery();
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from usuario_curte_ocorrencia");
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 UsuarioCurteOcorrencia uco = new UsuarioCurteOcorrencia();
@@ -33,12 +38,16 @@ public class UsuarioCurteOcorrenciaDAO {
                 uco.setOcorrencia(rs.getInt(2));
                 uco.setLatitude(rs.getDouble(3));
                 uco.setLongitude(rs.getDouble(4));
-                
+
                 ucos.add(uco);
             }
-            stmt.close();
+            
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return ucos;
     }

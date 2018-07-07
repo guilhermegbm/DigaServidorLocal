@@ -6,7 +6,6 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.Categoria;
-import com.diga.servidor.modelo.beans.Tag;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,12 +21,16 @@ import java.util.List;
 public class CategoriaDAO {
 
     public static List<Categoria> listarCategorias() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<Categoria> cat = new ArrayList<>();
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from categoria");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from categoria");
 
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Categoria c = new Categoria();
@@ -37,9 +40,12 @@ public class CategoriaDAO {
                 c.setCor(rs.getInt(3));
                 cat.add(c);
             }
-            stmt.close();
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return cat;
     }

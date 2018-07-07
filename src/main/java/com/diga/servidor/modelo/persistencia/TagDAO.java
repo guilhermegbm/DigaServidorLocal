@@ -20,14 +20,19 @@ import java.util.List;
  */
 public class TagDAO {
 
-    public static List<Tag> listarTags () {
+    public static List<Tag> listarTags() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<Tag> t = new ArrayList<>();
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
                     + "from tag");
 
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Tag tag = new Tag();
@@ -37,24 +42,32 @@ public class TagDAO {
                 tag.setImportancia(rs.getInt(3));
                 t.add(tag);
             }
-            stmt.close();
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return t;
     }
-    
+
     public static List<Tag> listarTagsPorOcorrencia(int codOcorrencia) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<Tag> t = new ArrayList<>();
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
                     + "from ocorrencia_possui_tags join tag "
                     + "where opt_tagCodigo = tagCodigo and "
                     + "opt_ocoCodigo = ?");
             stmt.setInt(1, codOcorrencia);
 
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Tag tag = new Tag();
@@ -64,10 +77,38 @@ public class TagDAO {
                 tag.setImportancia(rs.getInt(3));
                 t.add(tag);
             }
-            stmt.close();
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return t;
+    }
+
+    public static String insereOcorrenciaPossuiTags(int codigoOcorrencia, List<Tag> tags) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("insert into ocorrencia_possui_tags (opt_ocoCodigo, opt_tagCodigo) values (?,?)");
+
+            for (Tag tag : tags) {
+                stmt.setInt(1, codigoOcorrencia);
+                stmt.setInt(2, tag.getCodigo());
+                
+                stmt.executeUpdate();
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        } finally {
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return "1";
     }
 }

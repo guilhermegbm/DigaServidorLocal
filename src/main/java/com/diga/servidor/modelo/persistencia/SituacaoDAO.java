@@ -21,12 +21,17 @@ import java.util.List;
 public class SituacaoDAO {
 
     public static List<Situacao> listarTodas() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<Situacao> sit = new ArrayList<>();
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from situacao");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from situacao");
             
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             
             while (rs.next()) {
                 Situacao s = new Situacao();
@@ -36,9 +41,12 @@ public class SituacaoDAO {
                 
                 sit.add(s);
             }
-            stmt.close();
         } catch (SQLException ex) {
             System.out.println("Erro ao conectar bd: " + ex.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return sit;
     }

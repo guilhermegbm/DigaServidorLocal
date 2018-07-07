@@ -50,6 +50,12 @@ public class PesquisaOcorrencia extends HttpServlet {
             response.getWriter().println(new Gson().toJson(ocorrencias));
         } else {
             response.setHeader("auth", "0");
+            
+            List<Ocorrencia> o = null;
+            
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().println(new Gson().toJson(o));
         }
     }
 

@@ -21,12 +21,16 @@ import java.util.List;
 public class TipoUsuarioDAO {
 
     public static List<TipoUsuario> listarTipos() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<TipoUsuario> t = new ArrayList<>();
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from tipousuario");
-            ResultSet rs = stmt.executeQuery();
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from tipousuario");
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 TipoUsuario tu = new TipoUsuario();
@@ -35,9 +39,12 @@ public class TipoUsuarioDAO {
                 
                 t.add(tu);
             }
-            stmt.close();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return t;
     }

@@ -17,4 +17,8 @@ public class ControleTag {
     public static List<Tag> listarTags () {
         return TagDAO.listarTags();
     }
+
+    public static String insereOcorrenciaPossuiTags(int codigo, List<Tag> tags) {
+        return TagDAO.insereOcorrenciaPossuiTags(codigo, tags);
+    }
 }

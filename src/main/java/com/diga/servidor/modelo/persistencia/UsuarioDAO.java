@@ -23,42 +23,65 @@ import java.util.List;
 public class UsuarioDAO {
     
     public static boolean autenticaUsuario(String nomeUsuario, String senha) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ? and usuSenha = ?");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ? and usuSenha = ?");
             
             stmt.setString(1, nomeUsuario);
             stmt.setString(2, senha);
             
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             
-            return rs.first();
+            boolean auth = rs.first();
+            
+            return auth;
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
     }
     
     public static boolean nomeUsuarioExiste(String nomeUsuario) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ?");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ?");
             
             stmt.setString(1, nomeUsuario);
             
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             
-            return rs.first();
+            boolean existe = rs.first();
+            
+            return existe;
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return false;
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
     }
     
     public static String insereUsuario(Usuario u) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, u.getNome());
             stmt.setString(2, u.getNomeUsuario());
             stmt.setString(3, u.getSenha());
@@ -75,17 +98,24 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return "0";
+        } finally {
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return "1";
     }
     
     public static List<Usuario> listarUsuarios() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<Usuario> usuarios = new ArrayList<>();
         
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from usuario");
-            ResultSet rs = stmt.executeQuery();
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from usuario");
+            rs = stmt.executeQuery();
             
             while (rs.next()) {
                 Usuario u = new Usuario();
@@ -104,23 +134,30 @@ public class UsuarioDAO {
                 
                 usuarios.add(u);
             }
-            stmt.close();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return usuarios;
     }
     
     public static Usuario listarUsuarioPorNomeUsuarioESenha(String nomeUsuario, String senha) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         Usuario u = new Usuario();
         
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from usuario where usuNomeUsuario = ? and usuSenha = ?");
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from usuario where usuNomeUsuario = ? and usuSenha = ?");
             stmt.setString(1, nomeUsuario);
             stmt.setString(2, senha);
             
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             
             while (rs.next()) {
                 u.setCodigo(rs.getInt(1));
@@ -136,9 +173,12 @@ public class UsuarioDAO {
                 u.setTipoUsuario(rs.getInt(11));
                 
             }
-            stmt.close();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return u;
     }

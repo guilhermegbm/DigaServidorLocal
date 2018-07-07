@@ -21,12 +21,16 @@ import java.util.List;
 public class UsuarioReportaOcorrenciaDAO {
 
     public static List<UsuarioReportaOcorrencia> listarUros() {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
         List<UsuarioReportaOcorrencia> uros = new ArrayList<>();
 
         try {
-            Connection conn = DBConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement("select * from usuario_reporta_ocorrencia");
-            ResultSet rs = stmt.executeQuery();
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("select * from usuario_reporta_ocorrencia");
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 UsuarioReportaOcorrencia uro = new UsuarioReportaOcorrencia();
@@ -40,6 +44,10 @@ public class UsuarioReportaOcorrenciaDAO {
             stmt.close();
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return uros;
     }
