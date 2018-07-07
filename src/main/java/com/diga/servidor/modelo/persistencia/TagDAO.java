@@ -87,16 +87,15 @@ public class TagDAO {
         return t;
     }
 
-    public static String insereOcorrenciaPossuiTags(int codigoOcorrencia, List<Tag> tags) {
+    public static String insereOcorrenciaPossuiTags(List<Tag> tags) {
         Connection conn = null;
         PreparedStatement stmt = null;
         
         try {
             conn = DBConnection.getConnection();
-            stmt = conn.prepareStatement("insert into ocorrencia_possui_tags (opt_ocoCodigo, opt_tagCodigo) values (?,?)");
+            stmt = conn.prepareStatement("insert into ocorrencia_possui_tags (opt_ocoCodigo, opt_tagCodigo) values ((select max(ocoCodigo) from ocorrencia),?)");
 
             for (Tag tag : tags) {
-                stmt.setInt(1, codigoOcorrencia);
                 stmt.setInt(2, tag.getCodigo());
                 
                 stmt.executeUpdate();

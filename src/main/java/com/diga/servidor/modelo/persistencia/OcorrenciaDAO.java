@@ -46,11 +46,12 @@ public class OcorrenciaDAO {
             stmt.setInt(11, o.getSituacao());
             stmt.setInt(12, o.getUsuario());
             
-            String erro = ControleTag.insereOcorrenciaPossuiTags(o.getCodigo(), o.getTags());
-
-            if (erro.equals("0")) throw new SQLException();
-            
             stmt.executeUpdate();
+            
+            String erro = ControleTag.insereOcorrenciaPossuiTags(o.getTags());
+
+            if (erro.equals("0")) throw new SQLException("Erro na inserção das ocorrencia_possui_tags");
+            
 
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
