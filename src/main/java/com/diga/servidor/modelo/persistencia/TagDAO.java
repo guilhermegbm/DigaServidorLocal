@@ -96,7 +96,7 @@ public class TagDAO {
             stmt = conn.prepareStatement("insert into ocorrencia_possui_tags (opt_ocoCodigo, opt_tagCodigo) values ((select max(ocoCodigo) from ocorrencia),?)");
 
             for (Tag tag : tags) {
-                stmt.setInt(2, tag.getCodigo());
+                stmt.setInt(1, tag.getCodigo());
                 
                 stmt.executeUpdate();
             }
