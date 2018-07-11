@@ -101,7 +101,9 @@ public class OcorrenciaDAO {
                 o.setDataResolvida(rs.getDate(9));
                 
                 Blob fotoResolvida = rs.getBlob(10);
-                o.setFotoResolvida(new String(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                if (fotoResolvida != null ){
+                    o.setFotoResolvida(new String(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                }
                 
                 o.setNumCurtidas(rs.getInt(11));
                 o.setNumReports(rs.getInt(12));
