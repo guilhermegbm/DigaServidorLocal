@@ -221,13 +221,16 @@ public class OcorrenciaDAO {
         
         try {
             conn = DBConnection.getConnection();
+            
+            if (TagDAO.deletaOcorrenciaPossuiTagsPorCodOcorrencia(codigoOcorrencia).equals("0")) throw new SQLException("Erro na deleção das Tags da ocorrência de código " + codigoOcorrencia);
+            
             stmt = conn.prepareStatement("delete from ocorrencia where ocoCodigo = ?");
             stmt.setInt(1, codigoOcorrencia);
 
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            System.out.println("Erro ao conectar bd: " + e.getMessage());
             return "0";
         } finally {
             try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
