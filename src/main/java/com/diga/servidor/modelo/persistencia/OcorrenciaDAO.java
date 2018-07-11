@@ -16,7 +16,10 @@ import com.diga.servidor.modelo.beans.Ocorrencia;
 import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
 import com.diga.servidor.modelo.beans.UsuarioReportaOcorrencia;
 import com.diga.servidor.utils.DBConnection;
+import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Base64;
+import javax.sql.rowset.serial.SerialBlob;
 
 /**
  *
@@ -29,6 +32,9 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
+            byte[] byteDecodificado = Base64.getDecoder().decode(o.getFotoOcorrencia());
+            Blob b = new SerialBlob(byteDecodificado);
+            
             conn = DBConnection.getConnection();
             
             stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?,?)");
@@ -38,7 +44,7 @@ public class OcorrenciaDAO {
             stmt.setDouble(3, o.getLatitude());
             stmt.setDouble(4, o.getLongitude());
             stmt.setString(5, o.getEndereco());
-            stmt.setString(6, o.getFotoOcorrencia());
+            stmt.setBlob(6, b);
             stmt.setTimestamp(7, new Timestamp(o.getDataPostagem().getTime()));
             stmt.setInt(8, o.getNumCurtidas());
             stmt.setInt(9, o.getNumReports());
@@ -87,10 +93,16 @@ public class OcorrenciaDAO {
                 o.setLatitude(rs.getDouble(4));
                 o.setLongitude(rs.getDouble(5));
                 o.setEndereco(rs.getString(6));
-                o.setFotoOcorrencia(rs.getString(7));
+                
+                Blob fotoOcorrencia = rs.getBlob(7);
+                o.setFotoOcorrencia(new String(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
+                
                 o.setDataPostagem(rs.getDate(8));
                 o.setDataResolvida(rs.getDate(9));
-                o.setFotoResolvida(rs.getString(10));
+                
+                Blob fotoResolvida = rs.getBlob(10);
+                o.setFotoResolvida(new String(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                
                 o.setNumCurtidas(rs.getInt(11));
                 o.setNumReports(rs.getInt(12));
                 o.setCategoria(rs.getInt(13));

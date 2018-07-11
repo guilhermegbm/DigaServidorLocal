@@ -14,7 +14,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
+import javax.sql.rowset.serial.SerialBlob;
 
 /**
  *
@@ -80,6 +82,9 @@ public class UsuarioDAO {
         PreparedStatement stmt = null;
         
         try {
+            byte[] byteDecodificado = Base64.getDecoder().decode(u.getFoto());
+            Blob b = new SerialBlob(byteDecodificado);
+            
             conn = DBConnection.getConnection();
             stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, u.getNome());
@@ -90,7 +95,7 @@ public class UsuarioDAO {
             stmt.setString(6, u.getEnderecoCompleto());
             stmt.setBoolean(7, u.isIsInBlacklist());
             stmt.setInt(8, u.getNumStrikes());
-            stmt.setString(9, u.getFoto());
+            stmt.setBlob(9, b);
             stmt.setInt(10, u.getTipoUsuario());
             
             stmt.executeUpdate();
@@ -129,7 +134,10 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setFoto(rs.getString(10));
+                
+                Blob fotoUsuario = rs.getBlob(10);
+                u.setFoto(new String(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
+                
                 u.setTipoUsuario(rs.getInt(11));
                 
                 usuarios.add(u);
@@ -169,7 +177,10 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
-                u.setFoto(rs.getString(10));
+                
+                Blob fotoUsuario = rs.getBlob(10);
+                u.setFoto(new String(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
+                
                 u.setTipoUsuario(rs.getInt(11));
                 
             }
