@@ -224,6 +224,10 @@ public class OcorrenciaDAO {
             
             if (TagDAO.deletaOcorrenciaPossuiTagsPorCodOcorrencia(codigoOcorrencia).equals("0")) throw new SQLException("Erro na deleção das Tags da ocorrência de código " + codigoOcorrencia);
             
+            if (UsuarioCurteOcorrenciaDAO.deletaUsuarioCurteOcorrenciaPorCodOcorrencia(codigoOcorrencia).equals("0")) throw new SQLException("Erro na deleção das curtidas da ocorrência de código " + codigoOcorrencia);
+            
+            if (UsuarioReportaOcorrenciaDAO.deletaUsuarioReportaOcorrenciaPorCodOcorrencia(codigoOcorrencia).equals("0")) throw new SQLException("Erro na deleção dos Reports da ocorrência de código " + codigoOcorrencia);
+            
             stmt = conn.prepareStatement("delete from ocorrencia where ocoCodigo = ?");
             stmt.setInt(1, codigoOcorrencia);
 

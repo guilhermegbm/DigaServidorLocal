@@ -51,4 +51,26 @@ public class UsuarioReportaOcorrenciaDAO {
         }
         return uros;
     }
+    
+    public static String deletaUsuarioReportaOcorrenciaPorCodOcorrencia (int codigoOcorrencia) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = DBConnection.getConnection();
+            stmt = conn.prepareStatement("delete from usuario_reporta_ocorrencia where uro_ocoCodigo = ?;");
+
+            stmt.setInt(1, codigoOcorrencia);
+            
+            stmt.executeUpdate();
+            
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        } finally {
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return "1";
+    }
 }
