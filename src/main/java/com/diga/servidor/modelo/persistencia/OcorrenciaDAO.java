@@ -95,14 +95,14 @@ public class OcorrenciaDAO {
                 o.setEndereco(rs.getString(6));
                 
                 Blob fotoOcorrencia = rs.getBlob(7);
-                o.setFotoOcorrencia(new String(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
+                o.setFotoOcorrencia(Base64.getEncoder().encodeToString(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
                 
                 o.setDataPostagem(rs.getDate(8));
                 o.setDataResolvida(rs.getDate(9));
                 
                 Blob fotoResolvida = rs.getBlob(10);
                 if (fotoResolvida != null ){
-                    o.setFotoResolvida(new String(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                    o.setFotoResolvida(Base64.getEncoder().encodeToString(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
                 }
                 
                 o.setNumCurtidas(rs.getInt(11));

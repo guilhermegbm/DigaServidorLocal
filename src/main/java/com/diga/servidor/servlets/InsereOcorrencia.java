@@ -40,6 +40,10 @@ public class InsereOcorrencia extends HttpServlet {
             response.setHeader("auth", "1");
 
             Ocorrencia o = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create().fromJson(request.getParameter("ocorrencia"), Ocorrencia.class);
+            
+            String fotoOcorrencia = request.getParameter("fotoOcorrencia");
+            
+            o.setFotoOcorrencia(fotoOcorrencia);
 
             response.setHeader("sucesso", ControleOcorrencia.persistirOcorrencia(o));
         } else {

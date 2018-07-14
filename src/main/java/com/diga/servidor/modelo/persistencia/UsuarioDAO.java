@@ -137,7 +137,7 @@ public class UsuarioDAO {
                 
                 Blob fotoUsuario = rs.getBlob(10);
                 if (fotoUsuario != null ){
-                    u.setFoto(new String(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
+                    u.setFoto(Base64.getEncoder().encodeToString(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
                 }
                 
                 u.setTipoUsuario(rs.getInt(11));
@@ -181,7 +181,7 @@ public class UsuarioDAO {
                 u.setNumStrikes(rs.getInt(9));
                 
                 Blob fotoUsuario = rs.getBlob(10);
-                u.setFoto(new String(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
+                u.setFoto(Base64.getEncoder().encodeToString(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
                 
                 u.setTipoUsuario(rs.getInt(11));
                 
