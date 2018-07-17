@@ -6,6 +6,7 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.TipoUsuario;
+import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +29,7 @@ public class TipoUsuarioDAO {
         List<TipoUsuario> t = new ArrayList<>();
 
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select * from tipousuario");
             rs = stmt.executeQuery();
 

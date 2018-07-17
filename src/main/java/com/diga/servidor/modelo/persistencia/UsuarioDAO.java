@@ -8,6 +8,7 @@ package com.diga.servidor.modelo.persistencia;
 import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import javax.sql.rowset.serial.SerialBlob;
+import sun.misc.BASE64Decoder;
 
 /**
  *
@@ -30,7 +32,7 @@ public class UsuarioDAO {
         ResultSet rs = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ? and usuSenha = ?");
             
             stmt.setString(1, nomeUsuario);
@@ -57,7 +59,7 @@ public class UsuarioDAO {
         ResultSet rs = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select usuario.usuCodigo from usuario where usuNomeUsuario = ?");
             
             stmt.setString(1, nomeUsuario);
@@ -82,10 +84,12 @@ public class UsuarioDAO {
         PreparedStatement stmt = null;
         
         try {
-            byte[] byteDecodificado = Base64.getDecoder().decode(u.getFoto());
+            BASE64Decoder decoder = new BASE64Decoder();
+            //byte[] byteDecodificado = Base64.getDecoder().decode(u.getFoto());
+            byte[] byteDecodificado = decoder.decodeBuffer(u.getFoto());
             Blob b = new SerialBlob(byteDecodificado);
             
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, u.getNome());
             stmt.setString(2, u.getNomeUsuario());
@@ -100,8 +104,14 @@ public class UsuarioDAO {
             
             stmt.executeUpdate();
             
+        } catch (IOException e) {
+            System.out.println("Erro ao Formatar foto: " + e.getLocalizedMessage());
+            return "0";
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            return "0";
+        } catch (RuntimeException e) {
+            System.out.println("Erro fatal: " + e.getLocalizedMessage());
             return "0";
         } finally {
             try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
@@ -118,7 +128,7 @@ public class UsuarioDAO {
         List<Usuario> usuarios = new ArrayList<>();
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select * from usuario");
             rs = stmt.executeQuery();
             
@@ -162,7 +172,7 @@ public class UsuarioDAO {
         Usuario u = new Usuario();
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select * from usuario where usuNomeUsuario = ? and usuSenha = ?");
             stmt.setString(1, nomeUsuario);
             stmt.setString(2, senha);

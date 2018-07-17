@@ -15,11 +15,15 @@ import java.util.List;
 import com.diga.servidor.modelo.beans.Ocorrencia;
 import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
 import com.diga.servidor.modelo.beans.UsuarioReportaOcorrencia;
+import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Base64;
 import javax.sql.rowset.serial.SerialBlob;
+import sun.misc.BASE64Decoder;
 
 /**
  *
@@ -27,15 +31,17 @@ import javax.sql.rowset.serial.SerialBlob;
  */
 public class OcorrenciaDAO {
 
-    public static String persistirOcorrencia(Ocorrencia o) {
+    public static String persistirOcorrencia(Ocorrencia o){
         Connection conn = null;
         PreparedStatement stmt = null;
         
         try {
-            byte[] byteDecodificado = Base64.getDecoder().decode(o.getFotoOcorrencia());
+            BASE64Decoder decoder = new BASE64Decoder();
+            //byte[] byteDecodificado = Base64.getDecoder().decode(o.getFotoOcorrencia().getBytes(StandardCharsets.UTF_8));
+            byte[] byteDecodificado = decoder.decodeBuffer(o.getFotoOcorrencia());
             Blob b = new SerialBlob(byteDecodificado);
             
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             
             stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?,?)");
             
@@ -59,6 +65,9 @@ public class OcorrenciaDAO {
             if (erro.equals("0")) throw new SQLException("Erro na inserção das ocorrencia_possui_tags");
             
 
+        } catch (IOException e) {
+            System.out.println("Erro ao Formatar foto: " + e.getLocalizedMessage());
+            return "0";
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
             return "0";
@@ -77,7 +86,7 @@ public class OcorrenciaDAO {
         List<Ocorrencia> l = new ArrayList<>();
 
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             if ((query == null) || (query.equals(""))) {
                 stmt = conn.prepareStatement("select * from ocorrencia");
             } else {
@@ -130,7 +139,7 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("insert into usuario_curte_ocorrencia (uso_usuCodigo, uso_ocoCodigo, usoLatitude, usoLongitude) values (?,?,?,?)");
             stmt.setInt(1, uso.getUsuario());
             stmt.setInt(2, uso.getOcorrencia());
@@ -154,7 +163,7 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("delete from usuario_curte_ocorrencia where uso_usuCodigo = ? and uso_ocoCodigo = ?");
             stmt.setInt(1, usuario);
             stmt.setInt(2, ocorrencia);
@@ -176,7 +185,7 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("insert into usuario_reporta_ocorrencia (uro_usuCodigo, uro_ocoCodigo, uroLatitude, uroLongitude) values (?,?,?,?)");
             stmt.setInt(1, uro.getUsuario());
             stmt.setInt(2, uro.getOcorrencia());
@@ -200,7 +209,7 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("delete from usuario_reporta_ocorrencia where uro_usuCodigo = ? and uro_ocoCodigo = ?");
             stmt.setInt(1, usuario);
             stmt.setInt(2, ocorrencia);
@@ -222,7 +231,7 @@ public class OcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             
             if (TagDAO.deletaOcorrenciaPossuiTagsPorCodOcorrencia(codigoOcorrencia).equals("0")) throw new SQLException("Erro na deleção das Tags da ocorrência de código " + codigoOcorrencia);
             

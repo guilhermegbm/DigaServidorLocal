@@ -6,6 +6,7 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.Categoria;
+import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +28,7 @@ public class CategoriaDAO {
         
         List<Categoria> cat = new ArrayList<>();
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select * from categoria");
 
             rs = stmt.executeQuery();

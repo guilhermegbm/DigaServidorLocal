@@ -6,6 +6,7 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.UsuarioReportaOcorrencia;
+import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +29,7 @@ public class UsuarioReportaOcorrenciaDAO {
         List<UsuarioReportaOcorrencia> uros = new ArrayList<>();
 
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select * from usuario_reporta_ocorrencia");
             rs = stmt.executeQuery();
 
@@ -57,7 +58,7 @@ public class UsuarioReportaOcorrenciaDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("delete from usuario_reporta_ocorrencia where uro_ocoCodigo = ?;");
 
             stmt.setInt(1, codigoOcorrencia);

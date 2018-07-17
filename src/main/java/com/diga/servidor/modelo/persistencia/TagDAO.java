@@ -6,6 +6,7 @@
 package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.Tag;
+import com.diga.servidor.utils.ConnectionFactory;
 import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +29,7 @@ public class TagDAO {
         List<Tag> t = new ArrayList<>();
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
                     + "from tag");
 
@@ -60,7 +61,7 @@ public class TagDAO {
         List<Tag> t = new ArrayList<>();
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
                     + "from ocorrencia_possui_tags join tag "
                     + "where opt_tagCodigo = tagCodigo and "
@@ -92,7 +93,7 @@ public class TagDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("insert into ocorrencia_possui_tags (opt_ocoCodigo, opt_tagCodigo) values ((select max(ocoCodigo) from ocorrencia),?)");
 
             for (Tag tag : tags) {
@@ -116,7 +117,7 @@ public class TagDAO {
         PreparedStatement stmt = null;
         
         try {
-            conn = DBConnection.getConnection();
+            conn = ConnectionFactory.getConnection();
             stmt = conn.prepareStatement("delete from ocorrencia_possui_tags where opt_ocoCodigo = ?;");
 
             stmt.setInt(1, codigoOcorrencia);
