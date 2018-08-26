@@ -35,8 +35,8 @@ public class ControleOcorrencia {
         return s == true ? "1" : "0";
     }
 
-    public static List<Ocorrencia> pesquisaOcorrencia(String query) {
-        return OcorrenciaDAO.listarOcorrencias(query);
+    public static List<Ocorrencia> pesquisaOcorrencia(String query, int usuCodigo) {
+        return OcorrenciaDAO.listarOcorrencias(query, usuCodigo);
     }
 
     public static String curteOcorrencia(UsuarioCurteOcorrencia uso) {

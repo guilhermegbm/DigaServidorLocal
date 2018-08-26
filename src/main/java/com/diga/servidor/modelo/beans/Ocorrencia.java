@@ -23,8 +23,11 @@ public class Ocorrencia {
     private Date dataPostagem;
     private String fotoResolvida;
     private Date dataResolvida;
+    private boolean resolvida;
     private int numCurtidas;
     private int numReports;
+    private boolean usuarioAtualCurtiu; //Não é necessário nos BDs
+    private boolean usuarioAtualReportou; //Não é necessário nos BDs
     
     private int categoria;
     private int situacao;
@@ -111,6 +114,14 @@ public class Ocorrencia {
         this.dataResolvida = dataResolvida;
     }
 
+    public boolean isResolvida() {
+        return resolvida;
+    }
+
+    public void setResolvida(boolean resolvida) {
+        this.resolvida = resolvida;
+    }
+
     public int getNumCurtidas() {
         return numCurtidas;
     }
@@ -157,5 +168,21 @@ public class Ocorrencia {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+    
+    public boolean isUsuarioAtualCurtiu() {
+        return usuarioAtualCurtiu;
+    }
+
+    public void setUsuarioAtualCurtiu(boolean usuarioAtualCurtiu) {
+        this.usuarioAtualCurtiu = usuarioAtualCurtiu;
+    }
+
+    public boolean isUsuarioAtualReportou() {
+        return usuarioAtualReportou;
+    }
+
+    public void setUsuarioAtualReportou(boolean usuarioAtualReportou) {
+        this.usuarioAtualReportou = usuarioAtualReportou;
     }
 }

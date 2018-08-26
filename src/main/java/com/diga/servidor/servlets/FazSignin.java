@@ -23,10 +23,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author Guilherme
  */
 @WebServlet(name = "FazSignin", urlPatterns = {"/diga_api/FazSignin"}, initParams = {
-    @WebInitParam(name = "usuario", value = "")
-    ,@WebInitParam(name = "fotoUsuario", value = "")})
+    @WebInitParam(name = "usuario", value = "")})
 public class FazSignin extends HttpServlet {
 
+    
+    //, @WebInitParam(name = "fotoUsuario", value = "") Lá em cima
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -36,19 +38,14 @@ public class FazSignin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println(request.getParameter("usuario"));
-
         Usuario u = new Gson().fromJson(request.getParameter("usuario"), Usuario.class);
-
+        
         if (u != null) {
-            String fotoUsuario = request.getParameter("fotoUsuario");
-
-            u.setFoto(fotoUsuario);
-            u.setTipoUsuario(1);
-
+            u.setAdm(true);
+            
             if (!UsuarioDAO.nomeUsuarioExiste(u.getNomeUsuario())) {
                 response.setHeader("nUsuExiste", "0");
-
+            
                 response.setHeader("sucesso", ControleUsuario.insereUsuario(u));
             } else {
                 response.setHeader("nUsuExiste", "1");

@@ -7,11 +7,8 @@ package com.diga.teste.servlets;
 
 import com.diga.servidor.controle.*;
 import com.diga.servidor.modelo.beans.*;
-import com.diga.servidor.modelo.persistencia.OcorrenciaDAO;
-import com.diga.servidor.modelo.persistencia.UsuarioDAO;
 import com.google.gson.Gson;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
@@ -46,10 +43,9 @@ public class MostraTUDO extends HttpServlet {
             List<Object> valores = new ArrayList<>();
 
             List<Categoria> categorias = ControleCategoria.listarCategorias();
-            List<Ocorrencia> ocorrencias = ControleOcorrencia.pesquisaOcorrencia("");
+            List<Ocorrencia> ocorrencias = ControleOcorrencia.pesquisaOcorrencia("", 1);
             List<Situacao> situacoes = ControleSituacao.listarSituacoes();
             List<Tag> tags = ControleTag.listarTags();
-            List<TipoUsuario> tipos = ControleTipoUsuario.listarTipos();
             List<Usuario> usuarios = ControleUsuario.listarUsuarios();
             List<UsuarioCurteOcorrencia> uco = ControleUsuarioCurteOcorrencia.listarUcos();
             List<UsuarioReportaOcorrencia> uro = ControleUsuarioReportaOcorrencia.listarUros();
@@ -58,7 +54,6 @@ public class MostraTUDO extends HttpServlet {
             valores.add(ocorrencias);
             valores.add(situacoes);
             valores.add(tags);
-            valores.add(tipos);
             valores.add(usuarios);
             valores.add(uco);
             valores.add(uro);

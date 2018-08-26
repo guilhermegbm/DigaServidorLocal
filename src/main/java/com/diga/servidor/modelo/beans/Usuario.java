@@ -19,9 +19,8 @@ public class Usuario {
     private String enderecoCompleto;
     private boolean isInBlacklist;
     private int numStrikes;
+    private boolean isAdm;
     private String foto;
-    
-    private int tipoUsuario;
 
     public int getCodigo() {
         return codigo;
@@ -95,12 +94,12 @@ public class Usuario {
         this.numStrikes = numStrikes;
     }
 
-    public int getTipoUsuario() {
-        return tipoUsuario;
+    public boolean isAdm() {
+        return isAdm;
     }
 
-    public void setTipoUsuario(int tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public void setAdm(boolean isAdm) {
+        this.isAdm = isAdm;
     }
 
     public String getFoto() {

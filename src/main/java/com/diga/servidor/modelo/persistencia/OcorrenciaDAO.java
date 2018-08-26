@@ -43,7 +43,7 @@ public class OcorrenciaDAO {
             
             conn = ConnectionFactory.getConnection();
             
-            stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo) values (?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("insert into ocorrencia (ocoTitulo, ocoDescricao, ocoLatitude, ocoLongitude, ocoEndereco, ocoFotoOcorrencia, ocoDataPostagem, ocoNumCurtidas, ocoNumReports, oco_catCodigo, oco_sitCodigo, oco_usuCodigo, ocoResolvida) values (?,?,?,?,?,?,?,?,?,?,?,?,?)");
             
             stmt.setString(1, o.getTitulo());
             stmt.setString(2, o.getDescricao());
@@ -57,6 +57,7 @@ public class OcorrenciaDAO {
             stmt.setInt(10, o.getCategoria());
             stmt.setInt(11, o.getSituacao());
             stmt.setInt(12, o.getUsuario());
+            stmt.setBoolean(13, o.isResolvida());
             
             stmt.executeUpdate();
             
@@ -78,7 +79,7 @@ public class OcorrenciaDAO {
         return "1";
     }
 
-    public static List<Ocorrencia> listarOcorrencias(String query) {
+    public static List<Ocorrencia> listarOcorrencias(String query, int usuCodigo) {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -114,12 +115,19 @@ public class OcorrenciaDAO {
                     o.setFotoResolvida(Base64.getEncoder().encodeToString(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
                 }
                 
-                o.setNumCurtidas(rs.getInt(11));
-                o.setNumReports(rs.getInt(12));
-                o.setCategoria(rs.getInt(13));
-                o.setSituacao(rs.getInt(14));
-                o.setUsuario(rs.getInt(15));
+                o.setResolvida(rs.getBoolean(11));
+                o.setNumCurtidas(rs.getInt(12));
+                o.setNumReports(rs.getInt(13));
+                o.setCategoria(rs.getInt(14));
+                o.setSituacao(rs.getInt(15));
+                o.setUsuario(rs.getInt(16));
+                
                 o.setTags(TagDAO.listarTagsPorOcorrencia(rs.getInt(1)));
+                
+                o.setUsuarioAtualCurtiu(OcorrenciaDAO.usuarioAtualCurtiu(rs.getInt(1), usuCodigo));
+                o.setUsuarioAtualReportou(OcorrenciaDAO.usuarioAtualReportou(rs.getInt(1), usuCodigo));
+                
+                System.out.println("Valores: " + o.isUsuarioAtualReportou() + ", " + o.isUsuarioAtualCurtiu());
 
                 l.add(o);
             }
@@ -252,5 +260,59 @@ public class OcorrenciaDAO {
             try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
         return "1";
+    }
+    
+    private static boolean usuarioAtualCurtiu (int ocoCodigo, int usuCodigo) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        List<Ocorrencia> l = new ArrayList<>();
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement("select true from ocorrencia left join usuario_curte_ocorrencia on (uso_ocoCodigo = ocoCodigo) where uso_ocoCodigo = ? and uso_usuCodigo = ?");
+            
+            stmt.setInt(1, ocoCodigo);
+            stmt.setInt(2, usuCodigo);
+            
+            rs = stmt.executeQuery();
+
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return false;
+    }
+    
+    private static boolean usuarioAtualReportou (int ocoCodigo, int usuCodigo) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        List<Ocorrencia> l = new ArrayList<>();
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement("select true from ocorrencia left join usuario_reporta_ocorrencia on (uro_ocoCodigo = ocoCodigo) where uro_ocoCodigo = ? and uro_usuCodigo = ?");
+            
+            stmt.setInt(1, ocoCodigo);
+            stmt.setInt(2, usuCodigo);
+            
+            rs = stmt.executeQuery();
+
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return false;
     }
 }

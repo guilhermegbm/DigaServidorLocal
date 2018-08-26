@@ -90,7 +90,7 @@ public class UsuarioDAO {
             Blob b = new SerialBlob(byteDecodificado);
             
             conn = ConnectionFactory.getConnection();
-            stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuFoto, usu_tusCodigo) values (?,?,?,?,?,?,?,?,?,?)");
+            stmt = conn.prepareStatement("insert into usuario (usuNome, usuNomeUsuario, usuSenha, usuLatitudeResidencia, usuLongitudeResidencia, usuEnderecoCompleto, usuIsInBlacklist, usuNumStrikes, usuIsAdm, usuFoto) values (?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, u.getNome());
             stmt.setString(2, u.getNomeUsuario());
             stmt.setString(3, u.getSenha());
@@ -99,8 +99,8 @@ public class UsuarioDAO {
             stmt.setString(6, u.getEnderecoCompleto());
             stmt.setBoolean(7, u.isIsInBlacklist());
             stmt.setInt(8, u.getNumStrikes());
-            stmt.setBlob(9, b);
-            stmt.setInt(10, u.getTipoUsuario());
+            stmt.setBoolean(9, u.isAdm());
+            stmt.setBlob(10, b);
             
             stmt.executeUpdate();
             
@@ -144,13 +144,12 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
+                u.setAdm(rs.getBoolean(10));
                 
-                Blob fotoUsuario = rs.getBlob(10);
+                Blob fotoUsuario = rs.getBlob(11);
                 if (fotoUsuario != null ){
                     u.setFoto(Base64.getEncoder().encodeToString(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
                 }
-                
-                u.setTipoUsuario(rs.getInt(11));
                 
                 usuarios.add(u);
             }
@@ -189,12 +188,12 @@ public class UsuarioDAO {
                 u.setEnderecoCompleto(rs.getString(7));
                 u.setIsInBlacklist(rs.getBoolean(8));
                 u.setNumStrikes(rs.getInt(9));
+                u.setAdm(rs.getBoolean(10));
                 
-                Blob fotoUsuario = rs.getBlob(10);
-                u.setFoto(Base64.getEncoder().encodeToString(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
-                
-                u.setTipoUsuario(rs.getInt(11));
-                
+                Blob fotoUsuario = rs.getBlob(11);
+                if (fotoUsuario != null ){
+                    u.setFoto(Base64.getEncoder().encodeToString(fotoUsuario.getBytes(1, (int) fotoUsuario.length())));
+                }
             }
         } catch (SQLException e) {
             System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());

@@ -5,6 +5,7 @@
  */
 package com.diga.servidor.servlets;
 
+import com.diga.servidor.controle.ControleOcorrencia;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.diga.servidor.modelo.beans.Ocorrencia;
+import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.modelo.persistencia.OcorrenciaDAO;
 import com.diga.servidor.modelo.persistencia.UsuarioDAO;
 
@@ -38,12 +40,13 @@ public class PesquisaOcorrencia extends HttpServlet {
             throws ServletException, IOException {
 
         if (UsuarioDAO.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
+            Usuario u = UsuarioDAO.listarUsuarioPorNomeUsuarioESenha(request.getParameter("nomeUsuario"), request.getParameter("senha"));
             response.setHeader("auth", "1");
             
             String query = request.getParameter("query");
             System.out.println("Query: (POST)" + query);
 
-            List<Ocorrencia> ocorrencias = OcorrenciaDAO.listarOcorrencias(query);
+            List<Ocorrencia> ocorrencias = ControleOcorrencia.pesquisaOcorrencia(query, u.getCodigo());
 
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
