@@ -52,7 +52,7 @@ public class ControleOcorrencia {
     }
 
     public static String desreportaOcorrencia(int usuario, int ocorrencia) {
-        return OcorrenciaDAO.descurteOcorrencia(usuario, ocorrencia);
+        return OcorrenciaDAO.desreportaOcorrencia(usuario, ocorrencia);
     }
 
     public static String deletarOcorrencia(int codigoOcorrencia) {

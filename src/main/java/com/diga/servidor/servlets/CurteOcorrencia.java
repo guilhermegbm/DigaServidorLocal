@@ -7,11 +7,9 @@ package com.diga.servidor.servlets;
 
 import com.diga.servidor.controle.ControleOcorrencia;
 import com.diga.servidor.controle.ControleUsuario;
+import com.diga.servidor.modelo.beans.Usuario;
 import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.WebInitParam;
@@ -26,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "CurteOcorrencia", urlPatterns = {"/diga_api/CurteOcorrencia"}, initParams = {
     @WebInitParam(name = "nomeUsuario", value = "")
     , @WebInitParam(name = "senha", value = "")
-    , @WebInitParam(name = "usuarioCurteOcorrencia", value = "")})
+    , @WebInitParam(name = "codigoOcorrencia", value = "")
+    , @WebInitParam(name = "latitude", value = "")
+    , @WebInitParam(name = "longitude", value = "")})
 public class CurteOcorrencia extends HttpServlet {
 
     @Override
@@ -39,9 +39,15 @@ public class CurteOcorrencia extends HttpServlet {
             throws ServletException, IOException {
         if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
-
-            UsuarioCurteOcorrencia uso = new Gson().fromJson(request.getParameter("usuarioCurteOcorrencia"), UsuarioCurteOcorrencia.class);
             
+            Usuario u = ControleUsuario.listarUsuarioPorNomeUsuarioESenha(request.getParameter("nomeUsuario"), request.getParameter("senha"));
+            
+            UsuarioCurteOcorrencia uso = new UsuarioCurteOcorrencia();
+            uso.setUsuario(u.getCodigo());
+            uso.setOcorrencia(Integer.parseInt(request.getParameter("codigoOcorrencia")));
+            uso.setLatitude(Double.parseDouble(request.getParameter("latitude")));
+            uso.setLongitude(Double.parseDouble(request.getParameter("longitude")));
+
             response.setHeader("sucesso", ControleOcorrencia.curteOcorrencia(uso));
         } else {
             response.setHeader("auth", "0");

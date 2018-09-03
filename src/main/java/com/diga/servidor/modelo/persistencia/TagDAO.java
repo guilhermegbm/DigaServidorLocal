@@ -7,7 +7,6 @@ package com.diga.servidor.modelo.persistencia;
 
 import com.diga.servidor.modelo.beans.Tag;
 import com.diga.servidor.utils.ConnectionFactory;
-import com.diga.servidor.utils.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,7 +29,7 @@ public class TagDAO {
         
         try {
             conn = ConnectionFactory.getConnection();
-            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
+            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia, tag.tag_catCodigo "
                     + "from tag");
 
             rs = stmt.executeQuery();
@@ -41,6 +40,7 @@ public class TagDAO {
                 tag.setCodigo(rs.getInt(1));
                 tag.setNome(rs.getString(2));
                 tag.setImportancia(rs.getInt(3));
+                tag.setCategoria(rs.getInt(4));
                 t.add(tag);
             }
         } catch (SQLException ex) {
@@ -62,7 +62,7 @@ public class TagDAO {
         
         try {
             conn = ConnectionFactory.getConnection();
-            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia "
+            stmt = conn.prepareStatement("select tag.tagCodigo, tag.tagNome, tag.tagImportancia, tag.tag_catCodigo "
                     + "from ocorrencia_possui_tags join tag "
                     + "where opt_tagCodigo = tagCodigo and "
                     + "opt_ocoCodigo = ?");
@@ -76,6 +76,7 @@ public class TagDAO {
                 tag.setCodigo(rs.getInt(1));
                 tag.setNome(rs.getString(2));
                 tag.setImportancia(rs.getInt(3));
+                tag.setCategoria(rs.getInt(4));
                 t.add(tag);
             }
         } catch (SQLException ex) {

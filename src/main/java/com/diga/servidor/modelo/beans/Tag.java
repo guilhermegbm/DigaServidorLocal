@@ -13,6 +13,8 @@ public class Tag {
     private int codigo;
     private String nome;
     private int importancia;
+    
+    private int categoria;
 
     public int getCodigo() {
         return codigo;
@@ -37,6 +39,12 @@ public class Tag {
     public void setImportancia(int importancia) {
         this.importancia = importancia;
     }
-    
-    
+
+    public int getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(int categoria) {
+        this.categoria = categoria;
+    }
 }
