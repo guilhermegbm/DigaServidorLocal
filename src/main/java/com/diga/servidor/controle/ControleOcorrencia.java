@@ -38,6 +38,10 @@ public class ControleOcorrencia {
     public static List<Ocorrencia> pesquisaOcorrencia(String query, int usuCodigo) {
         return OcorrenciaDAO.listarOcorrencias(query, usuCodigo);
     }
+    
+    public static List<Ocorrencia> listarOcorrenciasPorPaginacao(int usuCodigo, int pagina, int rowsPorPagina) {
+        return OcorrenciaDAO.listarOcorrenciasPorPaginacao(usuCodigo, pagina, rowsPorPagina);
+    }
 
     public static String curteOcorrencia(UsuarioCurteOcorrencia uso) {
         return OcorrenciaDAO.curteOcorrencia(uso);
