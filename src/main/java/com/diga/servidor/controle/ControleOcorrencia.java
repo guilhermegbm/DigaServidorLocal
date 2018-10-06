@@ -62,4 +62,8 @@ public class ControleOcorrencia {
     public static String deletarOcorrencia(int codigoOcorrencia) {
         return OcorrenciaDAO.deletarOcorrencia(codigoOcorrencia);
     }
+    
+    public static Ocorrencia pegaDadosPorCodigo (int codigoOcorrencia, int usuCodigo) {
+        return OcorrenciaDAO.pegaDadosPorCodigo(codigoOcorrencia, usuCodigo);
+    }
 }
