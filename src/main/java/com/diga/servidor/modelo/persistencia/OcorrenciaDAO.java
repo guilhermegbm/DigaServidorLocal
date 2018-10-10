@@ -151,7 +151,7 @@ public class OcorrenciaDAO {
         try {
             conn = ConnectionFactory.getConnection();
             
-            stmt = conn.prepareStatement("select ocoCodigo, ocoTitulo, ocoFotoOcorrencia, ocoFotoResolvida, ocoNumCurtidas, ocoNumReports, ocoResolvida " +
+            stmt = conn.prepareStatement("select * " +
                     "from ocorrencia " +
                     "order by ocoDataPostagem DESC " +
                     "LIMIT ?,?", ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -168,22 +168,34 @@ public class OcorrenciaDAO {
                 Ocorrencia o = new Ocorrencia();
                 o.setCodigo(rs.getInt(1));
                 o.setTitulo(rs.getString(2));
+                o.setDescricao(rs.getString(3));
+                o.setLatitude(rs.getDouble(4));
+                o.setLongitude(rs.getDouble(5));
+                o.setEndereco(rs.getString(6));
                 
-                Blob fotoOcorrencia = rs.getBlob(3);
+                Blob fotoOcorrencia = rs.getBlob(7);
                 o.setFotoOcorrencia(Base64.getEncoder().encodeToString(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
                 
-                Blob fotoResolvida = rs.getBlob(4);
+                o.setDataPostagem(rs.getDate(8));
+                o.setDataResolvida(rs.getDate(9));
+                
+                Blob fotoResolvida = rs.getBlob(10);
                 if (fotoResolvida != null ){
                     o.setFotoResolvida(Base64.getEncoder().encodeToString(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
                 }
                 
-                o.setNumCurtidas(rs.getInt(5));
-                o.setNumReports(rs.getInt(6));
-                o.setResolvida(rs.getBoolean(7));
+                o.setResolvida(rs.getBoolean(11));
+                o.setNumCurtidas(rs.getInt(12));
+                o.setNumReports(rs.getInt(13));
+                o.setCategoria(rs.getInt(14));
+                o.setSituacao(rs.getInt(15));
+                o.setUsuario(rs.getInt(16));
+                
+                o.setTags(TagDAO.listarTagsPorOcorrencia(rs.getInt(1)));
                 
                 o.setUsuarioAtualCurtiu(OcorrenciaDAO.usuarioAtualCurtiu(rs.getInt(1), usuCodigo));
                 o.setUsuarioAtualReportou(OcorrenciaDAO.usuarioAtualReportou(rs.getInt(1), usuCodigo));
-
+                
                 l.add(o);
             }
             
