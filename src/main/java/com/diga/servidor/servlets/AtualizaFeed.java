@@ -6,11 +6,15 @@
 package com.diga.servidor.servlets;
 
 import com.diga.servidor.controle.ControleOcorrencia;
-import com.diga.servidor.modelo.beans.Ocorrencia;
-import com.diga.servidor.modelo.persistencia.UsuarioDAO;
+import com.diga.servidor.controle.ControleUsuario;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.WebInitParam;
@@ -22,37 +26,34 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Guilherme
  */
-@WebServlet(name = "PegaDadosPorCodigo", urlPatterns = {"/diga_api/PegaDadosPorCodigo"}, initParams = {
+@WebServlet(name = "AtualizaFeed", urlPatterns = {"/diga_api/AtualizaFeed"}, initParams = {
     @WebInitParam(name = "nomeUsuario", value = "")
     , @WebInitParam(name = "senha", value = "")
-    , @WebInitParam(name = "codigoOcorrencia", value = "")})
-public class PegaDadosPorCodigo extends HttpServlet {
+    , @WebInitParam(name = "dataInicial", value = "")
+    , @WebInitParam(name = "usuCodigo", value = "")})
+public class AtualizaFeed extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (UsuarioDAO.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
+        if (ControleUsuario.autenticaUsuario(request.getParameter("nomeUsuario"), request.getParameter("senha"))) {
             response.setHeader("auth", "1");
-            
-            int usuCodigo = UsuarioDAO.listarUsuarioPorNomeUsuarioESenha(request.getParameter("nomeUsuario"), request.getParameter("senha")).getCodigo();
-            
+
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
-            response.getWriter().println(new Gson().toJson(ControleOcorrencia.pegaDadosPorCodigo(Integer.parseInt(request.getParameter("codigoOcorrencia")), usuCodigo)));
-        } else {
-            response.setHeader("auth", "0");
+            response.getWriter().println(new Gson().toJson(ControleOcorrencia.atualizaFeed(request.getParameter("dataInicial"), Integer.parseInt(request.getParameter("usuCodigo")))));
         }
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
+    }
 
 }

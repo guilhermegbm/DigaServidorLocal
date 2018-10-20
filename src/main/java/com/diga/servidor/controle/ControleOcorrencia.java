@@ -9,6 +9,7 @@ import com.diga.servidor.modelo.beans.Ocorrencia;
 import com.diga.servidor.modelo.beans.UsuarioCurteOcorrencia;
 import com.diga.servidor.modelo.beans.UsuarioReportaOcorrencia;
 import com.diga.servidor.modelo.persistencia.OcorrenciaDAO;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,5 +66,17 @@ public class ControleOcorrencia {
     
     public static Ocorrencia pegaDadosPorCodigo (int codigoOcorrencia, int usuCodigo) {
         return OcorrenciaDAO.pegaDadosPorCodigo(codigoOcorrencia, usuCodigo);
+    }
+    
+    public static List<Ocorrencia> pegaDadosMapaPrimario () {
+        return OcorrenciaDAO.pegaDadosMapaPrimario();
+    }
+    
+    public static Ocorrencia pegaDadosMapaSecundario (int codigoOcorrencia, int usuCodigo) {
+        return OcorrenciaDAO.pegaDadosMapaSecundario(codigoOcorrencia, usuCodigo);
+    }
+
+    public static List<Ocorrencia> atualizaFeed(String dataInicial, int usuCodigo) {
+        return OcorrenciaDAO.atualizaFeed(dataInicial, usuCodigo);
     }
 }

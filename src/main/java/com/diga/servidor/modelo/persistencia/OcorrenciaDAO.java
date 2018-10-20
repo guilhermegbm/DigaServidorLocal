@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Base64;
+import java.util.Date;
 import javax.sql.rowset.serial.SerialBlob;
 import sun.misc.BASE64Decoder;
 
@@ -185,8 +186,10 @@ public class OcorrenciaDAO {
                 }
                 
                 o.setResolvida(rs.getBoolean(11));
-                o.setNumCurtidas(rs.getInt(12));
-                o.setNumReports(rs.getInt(13));
+                //o.setNumCurtidas(rs.getInt(12));
+                //o.setNumReports(rs.getInt(13));
+                o.setNumCurtidas(OcorrenciaDAO.pegaQtdeCurtidas(o.getCodigo()));
+                o.setNumReports(OcorrenciaDAO.pegaQtdeReports(o.getCodigo()));
                 o.setCategoria(rs.getInt(14));
                 o.setSituacao(rs.getInt(15));
                 o.setUsuario(rs.getInt(16));
@@ -200,7 +203,7 @@ public class OcorrenciaDAO {
             }
             
         } catch (SQLException e) {
-            System.out.println("Erro ao conectar bd: " + e.getLocalizedMessage());
+            System.out.println("listarOcorrenciasPorPaginacao: Erro ao conectar bd: " + e.getMessage());
         } finally {
             try { if (rs != null) rs.close(); } catch (SQLException e) {};
             try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
@@ -333,8 +336,6 @@ public class OcorrenciaDAO {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        
-        List<Ocorrencia> l = new ArrayList<>();
 
         try {
             conn = ConnectionFactory.getConnection();
@@ -360,8 +361,6 @@ public class OcorrenciaDAO {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        
-        List<Ocorrencia> l = new ArrayList<>();
 
         try {
             conn = ConnectionFactory.getConnection();
@@ -383,12 +382,69 @@ public class OcorrenciaDAO {
         return false;
     }
     
+    public static int pegaQtdeCurtidas (int codigoOcorrencia) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement("select count(uso_ocoCodigo) from usuario_curte_ocorrencia where uso_ocoCodigo = ?");
+            
+            stmt.setInt(1, codigoOcorrencia);
+            
+            rs = stmt.executeQuery();
+
+            int curtidas = 0;
+            while (rs.next()){
+                curtidas = rs.getInt(1);
+            }
+            return curtidas;
+        } catch (SQLException e) {
+            System.out.println("pegaQtdeCurtidas: Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return 0;
+    }
+    
+    public static int pegaQtdeReports (int codigoOcorrencia) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = ConnectionFactory.getConnection();
+            stmt = conn.prepareStatement("select count(uro_ocoCodigo) from usuario_reporta_ocorrencia where uro_ocoCodigo = ?");
+            
+            stmt.setInt(1, codigoOcorrencia);
+            
+            rs = stmt.executeQuery();
+
+            int reports = 0;
+            
+            while (rs.next()){
+                reports = rs.getInt(1);
+            }
+            return reports;
+        } catch (SQLException e) {
+            System.out.println("pegaQtdeReports: Erro ao conectar bd: " + e.getLocalizedMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return 0;
+    }
+    
     public static Ocorrencia pegaDadosPorCodigo (int codigoOcorrencia, int usuCodigo) {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         
-        Ocorrencia ocorrencia = new Ocorrencia();
+        Ocorrencia o = new Ocorrencia();
 
         try {
             conn = ConnectionFactory.getConnection();
@@ -398,7 +454,6 @@ public class OcorrenciaDAO {
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Ocorrencia o = new Ocorrencia();
                 o.setCodigo(rs.getInt(1));
                 o.setTitulo(rs.getString(2));
                 o.setDescricao(rs.getString(3));
@@ -437,6 +492,149 @@ public class OcorrenciaDAO {
             try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
             try { if (conn != null) conn.close(); } catch (SQLException e) {};
         }
-        return ocorrencia;
+        return o;
+    }
+    
+    public static List<Ocorrencia> pegaDadosMapaPrimario () {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        List<Ocorrencia> l = new ArrayList<>();
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            
+            stmt = conn.prepareStatement("select ocoCodigo, ocoLatitude, ocoLongitude, oco_catCodigo from ocorrencia");
+            
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Ocorrencia o = new Ocorrencia();
+                o.setCodigo(rs.getInt(1));
+                o.setLatitude(rs.getDouble(2));
+                o.setLongitude(rs.getDouble(3));
+                o.setCategoria(rs.getInt(4));
+                
+                l.add(o);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("pegaDadosMapaPrimario: Erro ao conectar bd: " + e.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return l;
+    }
+    
+    public static Ocorrencia pegaDadosMapaSecundario (int codigoOcorrencia, int usuCodigo) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        Ocorrencia o = new Ocorrencia();
+        o.setCodigo(codigoOcorrencia);
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            
+            stmt = conn.prepareStatement("select ocoResolvida, ocoFotoOcorrencia, ocoFotoResolvida from ocorrencia where ocoCodigo = ?");
+            stmt.setInt(1, codigoOcorrencia);
+            
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                o.setResolvida(rs.getBoolean(1));
+                
+                Blob fotoOcorrencia = rs.getBlob(2);
+                Blob fotoResolvida = rs.getBlob(3);
+                
+                if (o.isResolvida()){
+                    if (fotoResolvida != null ){
+                        o.setFotoResolvida(Base64.getEncoder().encodeToString(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                    }
+                } else {
+                    o.setFotoOcorrencia(Base64.getEncoder().encodeToString(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
+                }
+                
+                o.setUsuarioAtualCurtiu(OcorrenciaDAO.usuarioAtualCurtiu(rs.getInt(1), usuCodigo));
+                o.setUsuarioAtualReportou(OcorrenciaDAO.usuarioAtualReportou(rs.getInt(1), usuCodigo));
+                
+                o.setNumCurtidas(OcorrenciaDAO.pegaQtdeCurtidas(codigoOcorrencia));
+                o.setNumReports(OcorrenciaDAO.pegaQtdeReports(codigoOcorrencia));
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("pegaDadosMapaSecundario: Erro ao conectar bd: " + e.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return o;
+    }
+
+    public static List<Ocorrencia> atualizaFeed(String dataInicial, int usuCodigo) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        
+        List<Ocorrencia> l = new ArrayList<>();
+
+        try {
+            conn = ConnectionFactory.getConnection();
+            
+            stmt = conn.prepareStatement("select * from ocorrencia where ocoDataPostagem > ?");
+            stmt.setString(1, dataInicial);
+            
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Ocorrencia o = new Ocorrencia();
+                o.setCodigo(rs.getInt(1));
+                o.setTitulo(rs.getString(2));
+                o.setDescricao(rs.getString(3));
+                o.setLatitude(rs.getDouble(4));
+                o.setLongitude(rs.getDouble(5));
+                o.setEndereco(rs.getString(6));
+                
+                Blob fotoOcorrencia = rs.getBlob(7);
+                o.setFotoOcorrencia(Base64.getEncoder().encodeToString(fotoOcorrencia.getBytes(1, (int) fotoOcorrencia.length())));
+                
+                o.setDataPostagem(rs.getDate(8));
+                o.setDataResolvida(rs.getDate(9));
+                
+                Blob fotoResolvida = rs.getBlob(10);
+                if (fotoResolvida != null ){
+                    o.setFotoResolvida(Base64.getEncoder().encodeToString(fotoResolvida.getBytes(1, (int) fotoResolvida.length())));
+                }
+                
+                o.setResolvida(rs.getBoolean(11));
+                //o.setNumCurtidas(rs.getInt(12));
+                //o.setNumReports(rs.getInt(13));
+                o.setNumCurtidas(OcorrenciaDAO.pegaQtdeCurtidas(o.getCodigo()));
+                o.setNumReports(OcorrenciaDAO.pegaQtdeReports(o.getCodigo()));
+                o.setCategoria(rs.getInt(14));
+                o.setSituacao(rs.getInt(15));
+                o.setUsuario(rs.getInt(16));
+                
+                o.setTags(TagDAO.listarTagsPorOcorrencia(rs.getInt(1)));
+                
+                o.setUsuarioAtualCurtiu(OcorrenciaDAO.usuarioAtualCurtiu(rs.getInt(1), usuCodigo));
+                o.setUsuarioAtualReportou(OcorrenciaDAO.usuarioAtualReportou(rs.getInt(1), usuCodigo));
+                
+                l.add(o);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("listarOcorrenciasPorPaginacao: Erro ao conectar bd: " + e.getMessage());
+        } finally {
+            try { if (rs != null) rs.close(); } catch (SQLException e) {};
+            try { if (stmt != null) stmt.close(); } catch (SQLException e) {};
+            try { if (conn != null) conn.close(); } catch (SQLException e) {};
+        }
+        return l;
     }
 }
