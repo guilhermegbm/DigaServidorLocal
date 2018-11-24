@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template/template.xhtml">
+            <ui:define name="title">Ocorrências</ui:define>
+            <ui:define name="content">
+
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-6">
+                            <h1 class="if-page-title">Listagem de Ocorrências</h1>
+                        </div>
+                        <div class="ui-grid-col-6"/>
+                    </div>
+                    <br/>
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-12">
+                            <h:form id="formLista">
+                                <p:dataTable value="#{ocorrenciaListMB.ocorrencias}" var="ocorrencia" rowKey="#{ocorrencia.codigo}"
+                                             emptyMessage="Nenhuma ocorrencia encontrada">
+                                    <f:facet name="header">Tabela de Ocorrencias</f:facet>
+                                    <p:column headerText="Código" sortBy="#{ocorrencia.codigo}">
+                                        <h:outputText value="#{ocorrencia.codigo}"/>
+                                    </p:column>
+                                    <p:column headerText="Título" sortBy="#{ocorrencia.titulo}">
+                                        <h:outputText value="#{ocorrencia.titulo}"/>
+                                    </p:column>
+                                    <p:column headerText="Data de Postagem" sortBy="#{ocorrencia.dataPostagem}">
+                                        <h:outputText value="#{ocorrencia.dataPostagem}"/>
+                                    </p:column>
+                                    <p:column headerText="Resolvida" sortBy="#{ocorrencia.resolvida == true ? 'Sim' : 'Não'}">
+                                        <h:outputText value="#{ocorrencia.resolvida == true ? 'Sim' : 'Não'}"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

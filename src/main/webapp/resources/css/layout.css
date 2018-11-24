@@ -1,0 +1,107 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 30/10/2018, 17:52:09
+    Author     : Guilherme
+*/
+
+body {
+    /*background-color: #F3F5F8;*/
+    margin: 0;
+    color: #000;
+    font-family: Arial, "Times New Roman", sans-serif;
+    font-size: 15px;
+    background-color: #f5f5fa;
+}
+
+/* TOPBAR */
+.topbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    min-height: 60px;
+    z-index: 2;
+    background-color: #f1f1f1;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    width: 210px;
+    margin-left: 0px;
+    z-index: 1;
+    transition: margin-left 0.5s;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+}
+
+/* CONTENT */
+.content {
+    width: auto;
+    border: none;
+    margin: 60px 0px 5px 210px;
+    padding: 15px;
+    background-color: #f5f5fa;
+}
+
+/*Menu com Primefaces*/
+
+.sidebar .ui-menu {
+    border: none !important;
+    min-width: 95% !important;
+}
+
+.sidebar .ui-menuitem {
+    transition: 0.2s !important;
+    margin: 0 !important;
+}
+
+.sidebar .ui-menuitem:hover {
+    margin-left: 7px !important;
+    background-color: #fff !important;
+}
+
+.sidebar .ui-menuitem-link {
+    background-color: #fff !important;
+    height: 30px;
+}
+
+.sidebar .ui-menuitem .ui-menuitem-link:hover {
+    background-image: linear-gradient(#fff, #fff) !important;
+    color: black !important;
+}
+
+.sidebar .ui-menuitem-icon {
+    line-height: 30px;
+    height: auto;
+}
+
+.sidebar .ui-menuitem-text {
+    line-height: 30px;
+}
+
+/* PAGE-TITLE */
+.page-title {
+    margin: 0;
+    padding: 7px 0 20px;
+    font-size: 1.5em;
+    color: #373737;
+}
+
+/*Div principal*/
+
+#content {
+    background-color: #FFF;
+    padding: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    color: #5C666A;
+}
